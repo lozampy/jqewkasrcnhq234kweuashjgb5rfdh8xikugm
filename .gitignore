@@ -1,9 +1,1 @@
-```
-# Compiled and build artifacts
-*.o
-*.obj
-*.out
-
-# Executables
-storia_oggi
-```
+(storia_oggi.cpp is a source file, so no need to add anything to .gitignore)

@@ -5,18 +5,20 @@
 #include <algorithm>
 #include "dates.h"
 
+using namespace std;
+
 // Struttura per i fatti storici (compatibile con dates.h ma in stile C++)
 struct FattoStorico {
     int giorno;
     int mese;
     int anno;
     int importanza;
-    std::string descrizione;
+    string descrizione;
 };
 
 // Database di fatti storici organizzati per giorno e mese
-std::vector<FattoStorico> inizializzaFattiStorici() {
-    std::vector<FattoStorico> fatti;
+vector<FattoStorico> inizializzaFattiStorici() {
+    vector<FattoStorico> fatti;
     
     // GENNAIO
     fatti.push_back({1, 1, 1863, 1, "Proclamazione dell'Emancipazione negli USA da parte di Lincoln"});
@@ -108,8 +110,8 @@ std::vector<FattoStorico> inizializzaFattiStorici() {
 }
 
 // Funzione per trovare fatti storici accaduti oggi
-std::vector<FattoStorico> trovaFattiPerOggi(int giorno, int mese, const std::vector<FattoStorico>& tuttiIFatti) {
-    std::vector<FattoStorico> fattiOggi;
+vector<FattoStorico> trovaFattiPerOggi(int giorno, int mese, const vector<FattoStorico>& tuttiIFatti) {
+    vector<FattoStorico> fattiOggi;
     
     for (const auto& fatto : tuttiIFatti) {
         if (fatto.giorno == giorno && fatto.mese == mese) {
@@ -118,7 +120,7 @@ std::vector<FattoStorico> trovaFattiPerOggi(int giorno, int mese, const std::vec
     }
     
     // Ordina per importanza (1 = massima priorità)
-    std::sort(fattiOggi.begin(), fattiOggi.end(), 
+    sort(fattiOggi.begin(), fattiOggi.end(), 
               [](const FattoStorico& a, const FattoStorico& b) {
                   return a.importanza < b.importanza;
               });
@@ -127,8 +129,8 @@ std::vector<FattoStorico> trovaFattiPerOggi(int giorno, int mese, const std::vec
 }
 
 // Funzione per ottenere il nome del mese in italiano
-std::string nomeMeseItaliano(int mese) {
-    const std::vector<std::string> mesi = {
+string nomeMeseItaliano(int mese) {
+    const vector<string> mesi = {
         "", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
         "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"
     };
@@ -144,25 +146,25 @@ int main() {
     int meseCorrente = localTime->tm_mon + 1; // tm_mon va da 0 a 11
     int annoCorrente = localTime->tm_year + 1900;
     
-    std::cout << "========================================" << std::endl;
-    std::cout << "Oggi è: " << giornoCorrente << " " 
+    cout << "========================================" << endl;
+    cout << "Oggi è: " << giornoCorrente << " " 
               << nomeMeseItaliano(meseCorrente) << " " 
-              << annoCorrente << std::endl;
-    std::cout << "========================================" << std::endl;
-    std::cout << std::endl;
+              << annoCorrente << endl;
+    cout << "========================================" << endl;
+    cout << endl;
     
     // Inizializza il database dei fatti storici
-    std::vector<FattoStorico> tuttiIFatti = inizializzaFattiStorici();
+    vector<FattoStorico> tuttiIFatti = inizializzaFattiStorici();
     
     // Trova fatti accaduti oggi
-    std::vector<FattoStorico> fattiOggi = trovaFattiPerOggi(giornoCorrente, meseCorrente, tuttiIFatti);
+    vector<FattoStorico> fattiOggi = trovaFattiPerOggi(giornoCorrente, meseCorrente, tuttiIFatti);
     
     if (fattiOggi.empty()) {
-        std::cout << "Nessun fatto storico particolare registrato per oggi nel nostro database." << std::endl;
-        std::cout << "Ma ogni giorno fa la storia!" << std::endl;
+        cout << "Nessun fatto storico particolare registrato per oggi nel nostro database." << endl;
+        cout << "Ma ogni giorno fa la storia!" << endl;
     } else {
-        std::cout << "📚 FATTI STORICI ACCADUTI OGGI:" << std::endl;
-        std::cout << "----------------------------------------" << std::endl;
+        cout << "📚 FATTI STORICI ACCADUTI OGGI:" << endl;
+        cout << "----------------------------------------" << endl;
         
         int numeroFatto = 1;
         int importanzaPrecedente = 0;
@@ -170,30 +172,30 @@ int main() {
         for (const auto& fatto : fattiOggi) {
             // Mostra livello di importanza se cambia
             if (fatto.importanza != importanzaPrecedente) {
-                std::cout << std::endl;
+                cout << endl;
                 if (fatto.importanza == 1) {
-                    std::cout << "⭐ MASSIMA IMPORTANZA ⭐" << std::endl;
+                    cout << "⭐ MASSIMA IMPORTANZA ⭐" << endl;
                 } else if (fatto.importanza == 2) {
-                    std::cout << "🔹 ALTA IMPORTANZA 🔹" << std::endl;
+                    cout << "🔹 ALTA IMPORTANZA 🔹" << endl;
                 } else {
-                    std::cout << "🔸 IMPORTANZA MEDIA 🔸" << std::endl;
+                    cout << "🔸 IMPORTANZA MEDIA 🔸" << endl;
                 }
                 importanzaPrecedente = fatto.importanza;
             }
             
-            std::cout << std::endl;
-            std::cout << numeroFatto << ". " << fatto.descrizione << std::endl;
-            std::cout << "   Anno: " << fatto.anno << std::endl;
+            cout << endl;
+            cout << numeroFatto << ". " << fatto.descrizione << endl;
+            cout << "   Anno: " << fatto.anno << endl;
             numeroFatto++;
         }
         
-        std::cout << std::endl;
-        std::cout << "----------------------------------------" << std::endl;
-        std::cout << "Totale eventi trovati: " << fattiOggi.size() << std::endl;
+        cout << endl;
+        cout << "----------------------------------------" << endl;
+        cout << "Totale eventi trovati: " << fattiOggi.size() << endl;
     }
     
-    std::cout << std::endl;
-    std::cout << "========================================" << std::endl;
+    cout << endl;
+    cout << "========================================" << endl;
     
     return 0;
 }
