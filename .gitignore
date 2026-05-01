@@ -1,0 +1,9 @@
+```
+# Compiled and build artifacts
+*.o
+*.obj
+*.out
+
+# Executables
+storia_oggi
+```
