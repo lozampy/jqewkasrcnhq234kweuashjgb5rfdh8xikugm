@@ -58,7 +58,8 @@ int main() {
     int ora24         = dataLocale->tm_hour;
     int minuti        = dataLocale->tm_min;
     int secondi       = dataLocale->tm_sec;
- 
+
+    
     // ----------------------------------------------------------------
     // 2. Presentazione dell'intestazione
     // ----------------------------------------------------------------
@@ -126,12 +127,12 @@ int main() {
     // ----------------------------------------------------------------
     if (trovati == 0) {
         cout << "  Nessun evento storico registrato per oggi nel database.\n";
-        cout << "  Aggiungi eventi in dates.h per arricchire l'almanacco!\n";
-    } else {
-        cout << "  Trovati " << trovati << " event";
-        if (trovati == 1) cout << "o storico";
-        else              cout << "i storici";
-        cout << " per questa data.\n";
+    } 
+        else {
+            cout << "  Trovati " << trovati << " event";
+            if (trovati == 1) cout << "o storico";
+            else cout << "i storici";
+            cout << " per questa data.\n";
     }
  
     stampaLinea('=', 62);
