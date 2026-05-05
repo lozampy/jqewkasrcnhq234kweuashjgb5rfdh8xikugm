@@ -1,1 +1,43 @@
-(storia_oggi.cpp is a source file, so no need to add anything to .gitignore)
+```
+# Compiled files
+*.o
+*.obj
+*.out
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+.eggs/
+
+# Build directories
+build/
+dist/
+*.egg
+
+# System files
+.DS_Store
+Thumbs.db
+```
