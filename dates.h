@@ -408,3 +408,7 @@ public:
         eventi[363] = {29, 12, 1170, "Thomas Becket assassinato nella cattedrale di Canterbury"};
         eventi[364] = {30, 12, 1922, "Nasce l'Unione Sovietica"};
         eventi[365] = {31, 12, 1999, "Boris Yeltsin si dimette da presidente russo"};
+    }
+};
+
+#endif // EVENTI_STORICI_H
