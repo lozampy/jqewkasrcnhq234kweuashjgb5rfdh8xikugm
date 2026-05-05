@@ -45,9 +45,8 @@ void stampaLinea(char c, int lunghezza) {
 }
  
 int main() {
-    // ----------------------------------------------------------------
+   
     // 1. Recupero della data corrente tramite <ctime>
-    // ----------------------------------------------------------------
     time_t ora = time(nullptr);
     tm* dataLocale = localtime(&ora);
  
@@ -60,9 +59,8 @@ int main() {
     int secondi       = dataLocale->tm_sec;
 
     
-    // ----------------------------------------------------------------
     // 2. Presentazione dell'intestazione
-    // ----------------------------------------------------------------
+   
     stampaLinea('=', 62);
     cout << "        ALMANACCO STORICO - ACCADDE OGGI\n";
     stampaLinea('=', 62);
@@ -82,9 +80,7 @@ int main() {
  
     stampaLinea('-', 62);
  
-    // ----------------------------------------------------------------
     // 3. Ricerca degli eventi storici per il giorno corrente
-    // ----------------------------------------------------------------
     int trovati = 0;
  
     for (int i = 0; i < EVENTS_COUNT; ++i) {
@@ -122,9 +118,7 @@ int main() {
         }
     }
  
-    // ----------------------------------------------------------------
     // 4. Messaggio se non ci sono eventi registrati
-    // ----------------------------------------------------------------
     if (trovati == 0) {
         cout << "  Nessun evento storico registrato per oggi nel database.\n";
     } 
