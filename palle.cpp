@@ -82,9 +82,12 @@ int main() {
  
     // 3. Ricerca degli eventi storici per il giorno corrente
     int trovati = 0;
+    
+    // Crea un'istanza della classe EventiStorici per accedere agli eventi
+    EventiStorici eventiStorici;
  
-    for (int i = 0; i < EVENTS_COUNT; ++i) {
-        if (EVENTS[i].month == mese && EVENTS[i].day == giornoDelMese) {
+    for (int i = 0; i < EventiStorici::EVENTS_COUNT; ++i) {
+        if (eventiStorici.getEvento(i).mese == mese && eventiStorici.getEvento(i).giorno == giornoDelMese) {
             if (trovati == 0) {
                 cout << "  EVENTI STORICI accaduti il "
                      << giornoDelMese << " " << getNomeMese(mese - 1) << ":\n";
@@ -92,7 +95,7 @@ int main() {
             }
  
             // Anno: gestione anni a.C. (negativi)
-            int annoEvento = EVENTS[i].year;
+            int annoEvento = eventiStorici.getEvento(i).anno;
             if (annoEvento < 0) {
                 cout << "  [" << -annoEvento << " a.C.] ";
             } else {
@@ -101,7 +104,7 @@ int main() {
  
             // Stampa il testo dell'evento con ritorno a capo automatico
             // a 56 caratteri per adattarsi alla larghezza
-            const char* testo = EVENTS[i].event;
+            const char* testo = eventiStorici.getEvento(i).descrizione.c_str();
             int col = 11; // colonna corrente dopo "  [XXXX d.C.] "
             for (int j = 0; testo[j] != '\0'; ++j) {
                 cout << testo[j];
