@@ -18,13 +18,16 @@ private:
     Evento eventi[NUM_EVENTI];
     
 public:
-    // Metodo per accedere a un evento specifico
-    const Evento& getEvento(int index) const {
-        return eventi[index];
-    }
-    
+
     static const int EVENTS_COUNT = NUM_EVENTI;
+
+    const Evento& getEvento(int i) const {
+     return eventi[i];
+}
+        
     
+
+
     EventiStorici() {
         // Gennaio
         eventi[0] = {1, 1, 1959, "Rivoluzione Cubana: Fidel Castro prende il potere"};
