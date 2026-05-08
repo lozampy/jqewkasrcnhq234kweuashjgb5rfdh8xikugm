@@ -1,5 +1,7 @@
 #include <iostream>
 #include <ctime>
+#include <cstdlib>
+#include <cmath>
 #include "dates.h"
  
 using namespace std;
@@ -89,9 +91,88 @@ void stampaEventi(int giorno, int mese) {
         cout << " per questa data.\n";
     }
 }
- 
+    // Calcola il punteggio: 5000 se esatto, scende linearmente
+// fino a 1 punto per uno scarto di 500 anni o piu'.
+int calcolaPunteggio(int scarto) {
+    if (scarto == 0)   return 5000;
+    if (scarto >= 500) return 1;
+    return 5000 - static_cast<int>((scarto / 500.0) * 4999);
+}
+
+void mostraBarraPunteggio(int punti) {
+    const int LARGHEZZA = 50;
+    int blocchi = static_cast<int>((punti / 5000.0) * LARGHEZZA);
+    cout << "  [";
+    for (int i = 0; i < LARGHEZZA; ++i)
+        cout << (i < blocchi ? '#' : '.');
+    cout << "] " << punti << " / 5000\n";
+}
+
+void quizStorico() {
+    EventiStorici eventiStorici;
+
+    // Evento casuale dal database
+    int indice       = rand() % EventiStorici::EVENTS_COUNT;
+    int annoCorretto = eventiStorici.getEvento(indice).anno;
+    int giornoEvento = eventiStorici.getEvento(indice).giorno;
+    int meseEvento   = eventiStorici.getEvento(indice).mese;
+
+    stampaLinea('=', 62);
+    cout << "               QUIZ - INDOVINA L'ANNO!\n";
+    stampaLinea('=', 62);
+    cout << "  Data dell'evento: "
+         << giornoEvento << " " << getNomeMese(meseEvento - 1) << "\n\n";
+    cout << "  Descrizione:\n  ";
+
+    // Descrizione con a capo, senza rivelare l'anno
+    const char* testo = eventiStorici.getEvento(indice).descrizione.c_str();
+    int col = 2;
+    for (int j = 0; testo[j] != '\0'; ++j) {
+        cout << testo[j];
+        ++col;
+        if (col > 55 && testo[j] == ' ' && testo[j+1] != '\0') {
+            cout << "\n  ";
+            col = 2;
+        }
+    }
+    cout << "\n\n";
+    stampaLinea('-', 62);
+
+    int tentativo;
+    cout << "  In che anno e' accaduto questo evento?\n";
+    if (annoCorretto < 0)
+        cout << "  (usa numeri negativi per gli anni a.C., es. -44)\n";
+    cout << "  La tua risposta: ";
+    cin >> tentativo;
+
+    int scarto = abs(tentativo - annoCorretto);
+    int punti  = calcolaPunteggio(scarto);
+
+    stampaLinea('=', 62);
+
+    if (scarto == 0) {
+        cout << "  *** RISPOSTA ESATTA! Complimenti! ***\n\n";
+    } else {
+        if (annoCorretto < 0)
+            cout << "  La risposta corretta era: " << -annoCorretto << " a.C.\n";
+        else
+            cout << "  La risposta corretta era: " << annoCorretto << " d.C.\n";
+
+        if      (scarto == 1)   cout << "  Scarto: solo 1 anno! Quasi perfetto!\n\n";
+        else if (scarto <= 10)  cout << "  Scarto: " << scarto << " anni. Ottimo!\n\n";
+        else if (scarto <= 50)  cout << "  Scarto: " << scarto << " anni. Niente male!\n\n";
+        else if (scarto <= 150) cout << "  Scarto: " << scarto << " anni. Nella giusta era!\n\n";
+        else                    cout << "  Scarto: " << scarto << " anni. Studia di piu'!\n\n";
+    }
+
+    cout << "  PUNTEGGIO OTTENUTO:\n  ";
+    mostraBarraPunteggio(punti);
+    cout << "\n";
+
+    stampaLinea('=', 62);
+}
 int main() {
-   
+    srand(static_cast<unsigned int>(time(nullptr)));
     // 1. Recupero della data corrente
     time_t ora = time(nullptr);
     tm* dataLocale = localtime(&ora);
@@ -156,6 +237,25 @@ int main() {
 
         stampaLinea('=', 62);
     }
+    // QUIZ STORICO
+    cout << "\n  Vuoi giocare al QUIZ STORICO? (s/n): ";
+    cin >> scelta;
 
+    if (scelta == 's' || scelta == 'S') {
+        char ancora = 's';
+        int partite = 0;
+
+        while (ancora == 's' || ancora == 'S') {
+            quizStorico();
+            ++partite;
+            cout << "  Vuoi fare un altro quiz? (s/n): ";
+            cin >> ancora;
+        }
+
+        cout << "\n";
+        stampaLinea('=', 62);
+        cout << "  Grazie per aver giocato! Partite completate: " << partite << "\n";
+        stampaLinea('=', 62);
+}
     return 0;
 }
