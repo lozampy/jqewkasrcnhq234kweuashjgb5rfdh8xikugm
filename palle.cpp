@@ -54,7 +54,7 @@ int main() {
     int mese          = dataLocale->tm_mon + 1;        // tm_mon e' 0-11, convertiamo in 1-12
     int anno          = dataLocale->tm_year + 1900;    // tm_year e' anni dal 1900
     int giornoDellaSett = dataLocale->tm_wday;         // 0=domenica ... 6=sabato
-    int ora24         = dataLocale->tm_hour;
+    int ora24         = dataLocale->tm_hour + 2;
     int minuti        = dataLocale->tm_min;
     int secondi       = dataLocale->tm_sec;
 
