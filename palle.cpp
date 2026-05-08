@@ -4,7 +4,6 @@
  
 using namespace std;
  
-// Restituisce il nome del giorno della settimana
 const char* getNomeGiorno(int wday) {
     switch (wday) {
         case 0: return "Domenica";
@@ -18,7 +17,6 @@ const char* getNomeGiorno(int wday) {
     }
 }
  
-// Restituisce il nome del mese
 const char* getNomeMese(int mon) {
     switch (mon) {
         case 0:  return "Gennaio";
@@ -37,82 +35,43 @@ const char* getNomeMese(int mon) {
     }
 }
  
-// Stampa una linea decorativa
 void stampaLinea(char c, int lunghezza) {
     for (int i = 0; i < lunghezza; ++i)
         cout << c;
     cout << "\n";
 }
- 
-int main() {
-   
-    // 1. Recupero della data corrente tramite <ctime>
-    time_t ora = time(nullptr);
-    tm* dataLocale = localtime(&ora);
- 
-    int giornoDelMese = dataLocale->tm_mday;          // 1-31
-    int mese          = dataLocale->tm_mon + 1;        // tm_mon e' 0-11, convertiamo in 1-12
-    int anno          = dataLocale->tm_year + 1900;    // tm_year e' anni dal 1900
-    int giornoDellaSett = dataLocale->tm_wday;         // 0=domenica ... 6=sabato
-    int ora24         = dataLocale->tm_hour + 2;
-    int minuti        = dataLocale->tm_min;
-    int secondi       = dataLocale->tm_sec;
 
-    
-    // 2. Presentazione dell'intestazione
-   
-    stampaLinea('=', 62);
-    cout << "        ALMANACCO STORICO - ACCADDE OGGI\n";
-    stampaLinea('=', 62);
- 
-    // Stampa data e ora attuali
-    cout << "  " << getNomeGiorno(giornoDellaSett) << " "
-         << giornoDelMese << " " << getNomeMese(mese - 1) << " " << anno;
- 
-    // Ora con padding manuale
-    cout << "   ore ";
-    if (ora24 < 10)   cout << "0";
-    cout << ora24 << ":";
-    if (minuti < 10)  cout << "0";
-    cout << minuti << ":";
-    if (secondi < 10) cout << "0";
-    cout << secondi << "\n";
- 
-    stampaLinea('-', 62);
- 
-    // 3. Ricerca degli eventi storici per il giorno corrente
-    int trovati = 0;
-    
-    // Crea un'istanza della classe EventiStorici per accedere agli eventi
+bool dataValida(int giorno, int mese) {
+    if (mese < 1 || mese > 12) return false;
+    int giorniPerMese[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    return giorno >= 1 && giorno <= giorniPerMese[mese - 1];
+}
+
+void stampaEventi(int giorno, int mese) {
     EventiStorici eventiStorici;
- 
+    int trovati = 0;
+
     for (int i = 0; i < EventiStorici::EVENTS_COUNT; ++i) {
-        if (eventiStorici.getEvento(i).mese == mese && eventiStorici.getEvento(i).giorno == giornoDelMese) {
+        if (eventiStorici.getEvento(i).mese == mese && eventiStorici.getEvento(i).giorno == giorno) {
             if (trovati == 0) {
                 cout << "  EVENTI STORICI accaduti il "
-                     << giornoDelMese << " " << getNomeMese(mese - 1) << ":\n";
+                     << giorno << " " << getNomeMese(mese - 1) << ":\n";
                 stampaLinea('-', 62);
             }
- 
-            // Anno: gestione anni a.C. (negativi)
+
             int annoEvento = eventiStorici.getEvento(i).anno;
-            if (annoEvento < 0) {
+            if (annoEvento < 0)
                 cout << "  [" << -annoEvento << " a.C.] ";
-            } else {
+            else
                 cout << "  [" << annoEvento << " d.C.] ";
-            }
- 
-            // Stampa il testo dell'evento con ritorno a capo automatico
-            // a 56 caratteri per adattarsi alla larghezza
+
             const char* testo = eventiStorici.getEvento(i).descrizione.c_str();
-            int col = 11; // colonna corrente dopo "  [XXXX d.C.] "
+            int col = 11;
             for (int j = 0; testo[j] != '\0'; ++j) {
                 cout << testo[j];
                 ++col;
-                // Ritorno a capo "morbido": se siamo oltre 56 col e il
-                // prossimo carattere e' uno spazio, andiamo a capo
                 if (col > 55 && testo[j] == ' ' && testo[j+1] != '\0') {
-                    cout << "\n              ";  // indentazione allineata
+                    cout << "\n              ";
                     col = 14;
                 }
             }
@@ -120,19 +79,83 @@ int main() {
             ++trovati;
         }
     }
- 
-    // 4. Messaggio se non ci sono eventi registrati
+
     if (trovati == 0) {
-        cout << "  Nessun evento storico registrato per oggi nel database.\n";
-    } 
-        else {
-            cout << "  Trovati " << trovati << " event";
-            if (trovati == 1) cout << "o storico";
-            else cout << "i storici";
-            cout << " per questa data.\n";
+        cout << "  Nessun evento storico registrato per questa data nel database.\n";
+    } else {
+        cout << "  Trovati " << trovati << " event";
+        if (trovati == 1) cout << "o storico";
+        else cout << "i storici";
+        cout << " per questa data.\n";
     }
- 
-    stampaLinea('=', 62);
-    return 0;
 }
  
+int main() {
+   
+    // 1. Recupero della data corrente
+    time_t ora = time(nullptr);
+    tm* dataLocale = localtime(&ora);
+ 
+    int giornoDelMese   = dataLocale->tm_mday;
+    int mese            = dataLocale->tm_mon + 1;
+    int anno            = dataLocale->tm_year + 1900;
+    int giornoDellaSett = dataLocale->tm_wday;
+    int ora24           = dataLocale->tm_hour + 2;
+    int minuti          = dataLocale->tm_min;
+    int secondi         = dataLocale->tm_sec;
+
+    // 2. Intestazione con data di oggi
+    stampaLinea('=', 62);
+    cout << "        ALMANACCO STORICO - ACCADDE OGGI\n";
+    stampaLinea('=', 62);
+
+    cout << "  " << getNomeGiorno(giornoDellaSett) << " "
+         << giornoDelMese << " " << getNomeMese(mese - 1) << " " << anno;
+    cout << "   ore ";
+    if (ora24 < 10)   cout << "0";
+    cout << ora24 << ":";
+    if (minuti < 10)  cout << "0";
+    cout << minuti << ":";
+    if (secondi < 10) cout << "0";
+    cout << secondi << "\n";
+
+    stampaLinea('-', 62);
+
+    // 3. Mostra sempre gli eventi di oggi
+    stampaEventi(giornoDelMese, mese);
+
+    stampaLinea('=', 62);
+
+    // 4. Chiedi se cercare un'altra data
+    cout << "\n  Vuoi cercare un'altra data? (s/n): ";
+    char scelta;
+    cin >> scelta;
+
+    if (scelta == 's' || scelta == 'S') {
+        int giornoRicerca, meseRicerca;
+
+        cout << "  Inserisci il giorno (1-31): ";
+        cin >> giornoRicerca;
+        cout << "  Inserisci il mese  (1-12): ";
+        cin >> meseRicerca;
+
+        stampaLinea('=', 62);
+
+        if (!dataValida(giornoRicerca, meseRicerca)) {
+            cout << "  Errore: data non valida.\n";
+            stampaLinea('=', 62);
+            return 1;
+        }
+
+        cout << "        ALMANACCO STORICO - RICERCA DATA\n";
+        stampaLinea('=', 62);
+        cout << "  Data cercata: " << giornoRicerca << " " << getNomeMese(meseRicerca - 1) << "\n";
+        stampaLinea('-', 62);
+
+        stampaEventi(giornoRicerca, meseRicerca);
+
+        stampaLinea('=', 62);
+    }
+
+    return 0;
+}
